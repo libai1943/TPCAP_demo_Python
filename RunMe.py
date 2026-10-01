@@ -53,8 +53,8 @@ class Case:
             case.ymax = max(case.y0, case.yf) + 8
 
             case.obs_num = int(v[6])
-            num_vertexes = np.array(v[7:7 + case.obs_num], dtype=np.int)
-            vertex_start = 7 + case.obs_num + (np.cumsum(num_vertexes, dtype=np.int) - num_vertexes) * 2
+            num_vertexes = np.array(v[7:7 + case.obs_num], dtype=int)
+            vertex_start = 7 + case.obs_num + (np.cumsum(num_vertexes, dtype=int) - num_vertexes) * 2
             case.obs = []
             for vs, nv in zip(vertex_start, num_vertexes):
                 case.obs.append(np.array(v[vs:vs + nv * 2]).reshape((nv, 2), order='A'))
