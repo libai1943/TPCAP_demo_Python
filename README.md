@@ -1,7 +1,8 @@
 # TPCAP Parking Benchmarks — Python Demo
 
+[Download ZIP](https://github.com/libai1943/TPCAP_demo_Python/archive/refs/heads/main.zip) · [Getting started](#install-and-run) · [Guide](#code-map) · [Citation](#citation)
 
-**Twenty parking scenes. One small starting point for your planner.** This is the original benchmark-loading and visualization demo for the **Trajectory Planning Competition of Automated Parking (TPCAP)**, organized with IEEE ITSC 2022.
+**Load a parking scene in one call.** Obtain the start and goal poses, polygon obstacles and a vehicle model you can pass to your own planner. This is the original benchmark-loading and visualization demo for the **Trajectory Planning Competition of Automated Parking (TPCAP)**, organized with IEEE ITSC 2022.
 
 TPCAP focused on the planning module: participants submitted trajectories for evaluation without having to implement perception, localization, or vehicle tracking. The preliminary round ran from June 5 to September 12, 2022, and the final round took place on October 10–11, 2022. This repository preserves the **20 preliminary-round scenes** as a reusable research and teaching resource.
 
@@ -40,9 +41,15 @@ print(scene.x0, scene.y0, scene.theta0)
 print(scene.xf, scene.yf, scene.thetaf)
 print(scene.obs_num)
 body = scene.vehicle.create_polygon(scene.x0, scene.y0, scene.theta0)
+assert body.shape == (5, 2)
+assert scene.obs_num == 3  # Case3 has three quadrilateral obstacles
 ```
 
 The demo draws obstacle polygons, endpoint footprints, and heading arrows. It **does not generate trajectories, solve an optimization problem, or evaluate submission scores**.
+
+### Pass the geometry to another planner
+
+`Case.read` returns each obstacle as an `(n, 2)` array in CSV vertex order. `Vehicle.create_polygon` returns a **closed** outline with the first corner repeated. For a collision library that closes rings itself, pass `body[:-1]` for the vehicle and the original vertex arrays for the obstacles. Try [Case 11](BenchmarkCases/Case11.csv) to exercise a reader that accepts polygons of different sizes.
 
 ## Code map
 
@@ -75,6 +82,8 @@ The sample vehicle has a 2.8 m wheelbase, 0.96 m front overhang, 0.929 m rear ov
 To build a planner on top of the demo, read the initial/goal poses and obstacles, formulate your vehicle dynamics and collision constraints, then compute and evaluate a trajectory. Plotting a scene does not check feasibility or compute a competition score. The paper is the reference for the historical competition's rules and evaluation; this repository is the scene-loading demonstration.
 
 ## Related resources and license
+
+- [Benchmark archive and case-selection guide](https://github.com/libai1943/TPCAP_benchmarks).
 
 - [MATLAB version of the same scene demo](https://github.com/libai1943/TPCAP_demo_Matlab).
 - [TPCAP GitHub organization](https://github.com/TPCAP).
